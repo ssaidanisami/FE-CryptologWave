@@ -1,0 +1,10 @@
+{
+  "name": "FE-CryptologWave-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/FE-CryptologWave-e2e/src",
+  "tags": [],
+  "implicitDependencies": ["FE-CryptologWave"],
+  "// targets": "to see all targets run: nx show project FE-CryptologWave-e2e --web",
+  "targets": {}
+}
