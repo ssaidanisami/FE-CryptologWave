@@ -25,7 +25,7 @@ export type FeatureDetailMode = 'create' | 'edit' | 'view';
     TranslatePipe,
   ],
   templateUrl: './feature-detail.html',
-  styleUrl: './feature-detail.css',
+  styleUrl: './feature-detail.scss',
 })
 export class FeatureDetail implements OnInit {
   private readonly route = inject(ActivatedRoute);

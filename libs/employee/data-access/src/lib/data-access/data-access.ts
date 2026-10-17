@@ -4,6 +4,6 @@ import { Component } from '@angular/core';
   selector: 'lib-data-access',
   imports: [],
   templateUrl: './data-access.html',
-  styleUrl: './data-access.css',
+  styleUrl: './data-access.scss',
 })
 export class DataAccess {}

@@ -4,6 +4,6 @@ import { Component } from '@angular/core';
   selector: 'lib-shared-utils',
   imports: [],
   templateUrl: './shared-utils.html',
-  styleUrl: './shared-utils.css',
+  styleUrl: './shared-utils.scss',
 })
 export class SharedUtils {}

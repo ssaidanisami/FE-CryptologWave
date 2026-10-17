@@ -26,7 +26,7 @@ import { TranslatePipe } from '@fe-cryptolog-wave/shared-utils';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, ButtonModule, SelectModule, TranslatePipe],
   templateUrl: './employee-form.component.html',
-  styleUrl: './employee-form.component.css',
+  styleUrl: './employee-form.component.scss',
 })
 export class EmployeeFormComponent implements OnInit, OnChanges {
   private readonly fb = inject(FormBuilder);

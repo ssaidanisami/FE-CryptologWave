@@ -14,14 +14,14 @@ export interface LanguageOption {
   standalone: true,
   imports: [CommonModule, FormsModule, Select],
   templateUrl: './language-selector.component.html',
-  styleUrl: './language-selector.component.css',
+  styleUrl: './language-selector.component.scss',
 })
 export class LanguageSelectorComponent {
   private readonly translationService = inject(TranslationService);
 
   readonly languages: LanguageOption[] = [
     { label: 'English', value: 'en' },
-    { label: 'Français', value: 'fr' },
+    { label: 'FranÃ§ais', value: 'fr' },
   ];
 
   readonly currentLanguage = this.translationService.currentLanguage;

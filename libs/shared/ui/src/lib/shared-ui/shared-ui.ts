@@ -4,6 +4,6 @@ import { Component } from '@angular/core';
   selector: 'lib-shared-ui',
   imports: [],
   templateUrl: './shared-ui.html',
-  styleUrl: './shared-ui.css',
+  styleUrl: './shared-ui.scss',
 })
 export class SharedUi {}

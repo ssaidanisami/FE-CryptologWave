@@ -19,7 +19,7 @@ import { TranslatePipe, TranslationService } from '@fe-cryptolog-wave/shared-uti
     LanguageSelectorComponent,
   ],
   templateUrl: './feature-list.html',
-  styleUrl: './feature-list.css',
+  styleUrl: './feature-list.scss',
 })
 export class FeatureList implements OnInit {
   private readonly employeeService = inject(EmployeeService);
