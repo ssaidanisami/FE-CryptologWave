@@ -1,6 +1,7 @@
 <div class="employee-detail-container">
   <div class="header-nav">
-    <a routerLink="/employees" class="back-link">← Back to Employees</a>
+    <a routerLink="/employees" class="back-link">{{ 'employee.detail.back' | translate }}</a>
+    <lib-language-selector></lib-language-selector>
   </div>
 
   @if (errorMessage()) {
@@ -13,14 +14,14 @@
   @if (isLoading()) {
     <div class="loading-state">
       <div class="spinner"></div>
-      <p>Loading employee details...</p>
+      <p>{{ 'employee.detail.loading' | translate }}</p>
     </div>
   } @else {
     @if (mode() === 'create') {
       <div class="card">
-        <h2 class="card-title">Create New Employee</h2>
+        <h2 class="card-title">{{ 'employee.detail.createTitle' | translate }}</h2>
         <lib-employee-form
-          submitButtonText="Create Employee"
+          [submitButtonText]="'employee.detail.createButton' | translate"
           [isSubmitting]="isSubmitting()"
           (formSubmit)="onFormSubmit($event)"
           (formCancel)="onCancel()"
@@ -30,11 +31,11 @@
 
     @if (mode() === 'edit') {
       <div class="card">
-        <h2 class="card-title">Edit Employee</h2>
+        <h2 class="card-title">{{ 'employee.detail.editTitle' | translate }}</h2>
         @if (employee()) {
           <lib-employee-form
             [employee]="employee()"
-            submitButtonText="Update Employee"
+            [submitButtonText]="'employee.detail.updateButton' | translate"
             [isSubmitting]="isSubmitting()"
             (formSubmit)="onFormSubmit($event)"
             (formCancel)="onCancel()"
@@ -57,7 +58,7 @@
               (click)="switchToEdit()"
             >
               <i class="pi pi-pencil"></i>
-              <span>Edit</span>
+              <span>{{ 'employee.detail.edit' | translate }}</span>
             </button>
             <button
               pButton
@@ -66,30 +67,30 @@
               (click)="deleteCurrentEmployee()"
             >
               <i class="pi pi-trash"></i>
-              <span>{{ isSubmitting() ? 'Deleting...' : 'Delete' }}</span>
+              <span>{{ isSubmitting() ? ('employee.detail.deleting' | translate) : ('employee.detail.delete' | translate) }}</span>
             </button>
           </div>
         </div>
 
         <div class="details-grid">
           <div class="detail-item">
-            <span class="label">Employee ID</span>
+            <span class="label">{{ 'employee.detail.id' | translate }}</span>
             <span class="value">#{{ employee()?.id }}</span>
           </div>
           <div class="detail-item">
-            <span class="label">First Name</span>
+            <span class="label">{{ 'employee.detail.name' | translate }}</span>
             <span class="value">{{ employee()?.name }}</span>
           </div>
           <div class="detail-item">
-            <span class="label">Last Name</span>
+            <span class="label">{{ 'employee.detail.lastName' | translate }}</span>
             <span class="value">{{ employee()?.lastName }}</span>
           </div>
           <div class="detail-item">
-            <span class="label">Department</span>
+            <span class="label">{{ 'employee.detail.department' | translate }}</span>
             <span class="value">{{ employee()?.department }}</span>
           </div>
           <div class="detail-item">
-            <span class="label">Salary</span>
+            <span class="label">{{ 'employee.detail.salary' | translate }}</span>
             <span class="value highlight-salary">
               {{ employee()?.salary | currency:'USD':'symbol':'1.2-2' }}
             </span>

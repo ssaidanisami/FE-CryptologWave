@@ -7,6 +7,7 @@ import {
   Employee,
   CreateEmployeeDto,
 } from '@fe-cryptolog-wave/data-access';
+import { TranslationService } from '@fe-cryptolog-wave/shared-utils';
 
 describe('FeatureDetail', () => {
   let component: FeatureDetail;
@@ -14,6 +15,7 @@ describe('FeatureDetail', () => {
   let mockEmployeeService: any;
   let mockRouter: any;
   let activatedRouteStub: any;
+  let translationService: TranslationService;
 
   const sampleEmployee: Employee = {
     id: 1,
@@ -54,6 +56,7 @@ describe('FeatureDetail', () => {
       ],
     }).compileComponents();
 
+    translationService = TestBed.inject(TranslationService);
     fixture = TestBed.createComponent(FeatureDetail);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -64,6 +67,23 @@ describe('FeatureDetail', () => {
     expect(component.mode()).toBe('view');
     expect(component.employee()).toEqual(sampleEmployee);
     expect(mockEmployeeService.getEmployeeById).toHaveBeenCalledWith('1');
+  });
+
+  it('should adapt "Create New Employee" title and form when language changes', () => {
+    component.mode.set('create');
+    translationService.setLanguage('en');
+    fixture.detectChanges();
+
+    let compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.card-title')?.textContent).toContain('Create New Employee');
+    expect(compiled.querySelector('.back-link')?.textContent).toContain('Back to Employees');
+
+    translationService.setLanguage('fr');
+    fixture.detectChanges();
+
+    compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.card-title')?.textContent).toContain('Créer un Nouvel Employé');
+    expect(compiled.querySelector('.back-link')?.textContent).toContain('Retour aux Employés');
   });
 
   it('should navigate to edit view on switchToEdit', () => {

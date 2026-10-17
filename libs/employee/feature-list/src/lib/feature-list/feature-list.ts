@@ -4,12 +4,20 @@ import { Router, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { EmployeeService, Employee } from '@fe-cryptolog-wave/data-access';
+import { LanguageSelectorComponent } from '@fe-cryptolog-wave/shared-ui';
 import { TranslatePipe, TranslationService } from '@fe-cryptolog-wave/shared-utils';
 
 @Component({
   selector: 'lib-feature-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, ButtonModule, TableModule, TranslatePipe],
+  imports: [
+    CommonModule,
+    RouterLink,
+    ButtonModule,
+    TableModule,
+    TranslatePipe,
+    LanguageSelectorComponent,
+  ],
   templateUrl: './feature-list.html',
   styleUrl: './feature-list.css',
 })

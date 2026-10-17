@@ -5,6 +5,7 @@
     "@angular/common": "^22.1.0",
     "@angular/core": "^22.1.0",
     "@fe-cryptolog-wave/data-access": "0.0.1",
+    "@fe-cryptolog-wave/shared-utils": "0.0.1",
     "@angular/forms": "~22.1.0",
     "primeng": "^22.1.2"
   },

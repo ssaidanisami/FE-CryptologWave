@@ -1,0 +1,11 @@
+<div class="language-selector-wrapper">
+  <p-select
+    [options]="languages"
+    [ngModel]="currentLanguage()"
+    (ngModelChange)="onLanguageChange($event)"
+    optionLabel="label"
+    optionValue="value"
+    [ariaLabel]="'Select Language'"
+    size="small"
+  ></p-select>
+</div>

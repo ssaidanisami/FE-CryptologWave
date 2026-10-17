@@ -1,7 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { FeatureDetail } from './feature-detail';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
+import { providePrimeNG } from 'primeng/config';
+import Aura from '@primeng/themes/aura';
 import { EmployeeService, Employee } from '@fe-cryptolog-wave/data-access';
+import { TranslationService } from '@fe-cryptolog-wave/shared-utils';
 import { of, throwError } from 'rxjs';
 
 describe('FeatureDetail Component Tests', () => {
@@ -36,6 +39,8 @@ describe('FeatureDetail Component Tests', () => {
       TestBed.configureTestingModule({
         providers: [
           provideRouter([]),
+          providePrimeNG({ theme: { preset: Aura } }),
+          TranslationService,
           { provide: EmployeeService, useValue: mockEmployeeService },
           {
             provide: ActivatedRoute,
@@ -58,7 +63,9 @@ describe('FeatureDetail Component Tests', () => {
       cy.get('input#name').type('Carlos');
       cy.get('input#lastName').type('Santana');
       cy.get('input#salary').type('90000');
-      cy.get('select#department').select('Engineering');
+      // PrimeNG p-select interaction
+      cy.get('p-select#department').click();
+      cy.get('.p-select-option').contains('Engineering').click();
 
       cy.get('button[type="submit"]').contains('Create Employee').click();
     });
@@ -78,6 +85,8 @@ describe('FeatureDetail Component Tests', () => {
       TestBed.configureTestingModule({
         providers: [
           provideRouter([]),
+          providePrimeNG({ theme: { preset: Aura } }),
+          TranslationService,
           { provide: EmployeeService, useValue: mockEmployeeService },
           {
             provide: ActivatedRoute,
@@ -118,6 +127,8 @@ describe('FeatureDetail Component Tests', () => {
       TestBed.configureTestingModule({
         providers: [
           provideRouter([]),
+          providePrimeNG({ theme: { preset: Aura } }),
+          TranslationService,
           { provide: EmployeeService, useValue: mockEmployeeService },
           {
             provide: ActivatedRoute,
@@ -140,7 +151,7 @@ describe('FeatureDetail Component Tests', () => {
       cy.get('input#name').should('have.value', 'Jane');
       cy.get('input#lastName').should('have.value', 'Doe');
       cy.get('input#salary').should('have.value', '72000');
-      cy.get('select#department').should('have.value', 'Human Resources');
+      cy.get('p-select#department').should('contain.text', 'Human Resources');
 
       cy.get('input#name').clear().type('Janet');
       cy.get('button[type="submit"]').contains('Update Employee').click();
@@ -155,6 +166,8 @@ describe('FeatureDetail Component Tests', () => {
       TestBed.configureTestingModule({
         providers: [
           provideRouter([]),
+          providePrimeNG({ theme: { preset: Aura } }),
+          TranslationService,
           { provide: EmployeeService, useValue: mockEmployeeService },
           {
             provide: ActivatedRoute,

@@ -1,6 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { FeatureList } from './feature-list';
 import { provideRouter, Router } from '@angular/router';
+import { providePrimeNG } from 'primeng/config';
+import Aura from '@primeng/themes/aura';
 import { EmployeeService, Employee } from '@fe-cryptolog-wave/data-access';
 import { TranslationService } from '@fe-cryptolog-wave/shared-utils';
 import { of, throwError } from 'rxjs';
@@ -24,7 +26,6 @@ describe('FeatureList Component Tests', () => {
   ];
 
   let mockEmployeeService: Partial<EmployeeService>;
-  let mockRouter: Partial<Router>;
 
   beforeEach(() => {
     cy.viewport('macbook-13');
@@ -33,16 +34,13 @@ describe('FeatureList Component Tests', () => {
       getEmployees: () => of(mockEmployees),
       deleteEmployee: (id: string | number) => of(void 0),
     };
-
-    mockRouter = {
-      navigate: (commands: any[]) => Promise.resolve(true),
-    };
   });
 
   it('renders employee table with data successfully', () => {
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
+        providePrimeNG({ theme: { preset: Aura } }),
         TranslationService,
         { provide: EmployeeService, useValue: mockEmployeeService },
       ],
@@ -51,8 +49,8 @@ describe('FeatureList Component Tests', () => {
     cy.mount(FeatureList);
 
     cy.contains('Employee Directory').should('be.visible');
-    cy.get('table.employee-table').should('be.visible');
-    cy.get('tbody tr').should('have.length', 2);
+    cy.get('p-table').should('be.visible');
+    cy.get('p-table tbody tr').should('have.length', 2);
     cy.contains('Alice Smith').should('be.visible');
     cy.contains('Bob Johnson').should('be.visible');
     cy.contains('Engineering').should('be.visible');
@@ -65,6 +63,7 @@ describe('FeatureList Component Tests', () => {
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
+        providePrimeNG({ theme: { preset: Aura } }),
         TranslationService,
         { provide: EmployeeService, useValue: mockEmployeeService },
       ],
@@ -83,6 +82,7 @@ describe('FeatureList Component Tests', () => {
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
+        providePrimeNG({ theme: { preset: Aura } }),
         TranslationService,
         { provide: EmployeeService, useValue: mockEmployeeService },
       ],
@@ -96,16 +96,19 @@ describe('FeatureList Component Tests', () => {
   it('navigates when clicking + Add Employee button', () => {
     TestBed.configureTestingModule({
       providers: [
+        provideRouter([]),
+        providePrimeNG({ theme: { preset: Aura } }),
         TranslationService,
         { provide: EmployeeService, useValue: mockEmployeeService },
-        { provide: Router, useValue: mockRouter },
       ],
     });
 
-    cy.spy(mockRouter, 'navigate').as('navigateSpy');
-    cy.mount(FeatureList);
+    cy.mount(FeatureList).then(() => {
+      const router = TestBed.inject(Router);
+      cy.stub(router, 'navigate').resolves(true).as('navigateSpy');
+    });
 
-    cy.contains('+ Add Employee').click();
+    cy.contains('button', 'Add Employee').click();
     cy.get('@navigateSpy').should('have.been.calledWith', ['/employees/new']);
   });
 
@@ -115,6 +118,7 @@ describe('FeatureList Component Tests', () => {
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
+        providePrimeNG({ theme: { preset: Aura } }),
         TranslationService,
         { provide: EmployeeService, useValue: mockEmployeeService },
       ],
@@ -122,10 +126,25 @@ describe('FeatureList Component Tests', () => {
 
     cy.mount(FeatureList);
 
-    cy.get('tbody tr').should('have.length', 2);
-    cy.get('tbody tr').first().contains('Delete').click();
-    cy.get('tbody tr').should('have.length', 1);
+    cy.get('p-table tbody tr').should('have.length', 2);
+    cy.get('p-table tbody tr').first().contains('Delete').click();
+    cy.get('p-table tbody tr').should('have.length', 1);
     cy.contains('Alice Smith').should('not.exist');
     cy.contains('Bob Johnson').should('be.visible');
+  });
+
+  it('renders PrimeNG paginator', () => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        providePrimeNG({ theme: { preset: Aura } }),
+        TranslationService,
+        { provide: EmployeeService, useValue: mockEmployeeService },
+      ],
+    });
+
+    cy.mount(FeatureList);
+
+    cy.get('.p-paginator').should('be.visible');
   });
 });

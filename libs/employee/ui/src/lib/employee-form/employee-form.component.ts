@@ -19,11 +19,12 @@ import {
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { Employee, CreateEmployeeDto } from '@fe-cryptolog-wave/data-access';
+import { TranslatePipe } from '@fe-cryptolog-wave/shared-utils';
 
 @Component({
   selector: 'lib-employee-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ButtonModule, SelectModule],
+  imports: [CommonModule, ReactiveFormsModule, ButtonModule, SelectModule, TranslatePipe],
   templateUrl: './employee-form.component.html',
   styleUrl: './employee-form.component.css',
 })

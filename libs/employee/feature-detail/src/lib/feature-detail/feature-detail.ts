@@ -8,13 +8,22 @@ import {
   CreateEmployeeDto,
 } from '@fe-cryptolog-wave/data-access';
 import { EmployeeFormComponent } from '@fe-cryptolog-wave/ui';
+import { LanguageSelectorComponent } from '@fe-cryptolog-wave/shared-ui';
+import { TranslatePipe, TranslationService } from '@fe-cryptolog-wave/shared-utils';
 
 export type FeatureDetailMode = 'create' | 'edit' | 'view';
 
 @Component({
   selector: 'lib-feature-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, ButtonModule, EmployeeFormComponent],
+  imports: [
+    CommonModule,
+    RouterLink,
+    ButtonModule,
+    EmployeeFormComponent,
+    LanguageSelectorComponent,
+    TranslatePipe,
+  ],
   templateUrl: './feature-detail.html',
   styleUrl: './feature-detail.css',
 })
@@ -22,6 +31,7 @@ export class FeatureDetail implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly employeeService = inject(EmployeeService);
+  private readonly translationService = inject(TranslationService);
 
   mode = signal<FeatureDetailMode>('view');
   employeeId = signal<string | number | null>(null);
@@ -61,7 +71,9 @@ export class FeatureDetail implements OnInit {
         this.isLoading.set(false);
       },
       error: (err) => {
-        this.errorMessage.set(err?.message || 'Failed to load employee details.');
+        this.errorMessage.set(
+          err?.message || this.translationService.translate('employee.detail.errors.loadFailed')
+        );
         this.isLoading.set(false);
       },
     });
@@ -85,7 +97,9 @@ export class FeatureDetail implements OnInit {
           this.router.navigate(['/employees', created.id]);
         },
         error: (err) => {
-          this.errorMessage.set(err?.message || 'Failed to create employee.');
+          this.errorMessage.set(
+            err?.message || this.translationService.translate('employee.detail.errors.createFailed')
+          );
           this.isSubmitting.set(false);
         },
       });
@@ -97,7 +111,9 @@ export class FeatureDetail implements OnInit {
           this.router.navigate(['/employees', updated.id]);
         },
         error: (err) => {
-          this.errorMessage.set(err?.message || 'Failed to update employee.');
+          this.errorMessage.set(
+            err?.message || this.translationService.translate('employee.detail.errors.updateFailed')
+          );
           this.isSubmitting.set(false);
         },
       });
@@ -117,7 +133,10 @@ export class FeatureDetail implements OnInit {
     if (!current) return;
 
     const confirmed = confirm(
-      `Are you sure you want to delete ${current.name} ${current.lastName}?`
+      this.translationService.translate('employee.detail.confirmDelete', {
+        name: current.name,
+        lastName: current.lastName,
+      })
     );
     if (!confirmed) return;
 
@@ -128,7 +147,9 @@ export class FeatureDetail implements OnInit {
         this.router.navigate(['/employees']);
       },
       error: (err) => {
-        this.errorMessage.set(err?.message || 'Failed to delete employee.');
+        this.errorMessage.set(
+          err?.message || this.translationService.translate('employee.detail.errors.deleteFailed')
+        );
         this.isSubmitting.set(false);
       },
     });

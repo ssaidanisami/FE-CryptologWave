@@ -12,6 +12,7 @@
       "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/employee-portal",
+        "index": "employee-portal/src/index.html",
         "browser": "employee-portal/src/main.ts",
         "tsConfig": "employee-portal/tsconfig.app.json",
         "inlineStyleLanguage": "scss",

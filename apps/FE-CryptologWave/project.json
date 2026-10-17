@@ -12,6 +12,7 @@
       "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/apps/FE-CryptologWave",
+        "index": "apps/FE-CryptologWave/src/index.html",
         "browser": "apps/FE-CryptologWave/src/main.ts",
         "tsConfig": "apps/FE-CryptologWave/tsconfig.app.json",
         "inlineStyleLanguage": "scss",

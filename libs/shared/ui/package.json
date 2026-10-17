@@ -2,7 +2,11 @@
   "name": "@fe-cryptolog-wave/shared-ui",
   "version": "0.0.1",
   "peerDependencies": {
-    "@angular/core": "^22.1.0"
+    "@angular/common": "^22.1.0",
+    "@angular/core": "^22.1.0",
+    "@angular/forms": "~22.1.0",
+    "@fe-cryptolog-wave/shared-utils": "0.0.1",
+    "primeng": "^22.1.2"
   },
   "sideEffects": false,
   "private": true

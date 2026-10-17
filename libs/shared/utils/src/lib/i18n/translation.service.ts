@@ -23,30 +23,12 @@ export class TranslationService {
     const lang = this.currentLanguageSignal();
     const dictionary = translations[lang] || translations['en'];
 
-    let value: unknown = dictionary;
-    const keys = key.split('.');
-
-    for (const k of keys) {
-      if (value && typeof value === 'object' && k in value) {
-        value = (value as Record<string, unknown>)[k];
-      } else {
-        value = undefined;
-        break;
-      }
-    }
+    const value: unknown = this.lookupKey(dictionary, key);
 
     if (value === undefined || typeof value !== 'string') {
       // Fallback to English if translation is missing in selected language
       if (lang !== 'en') {
-        let fallbackValue: unknown = translations['en'];
-        for (const k of keys) {
-          if (fallbackValue && typeof fallbackValue === 'object' && k in fallbackValue) {
-            fallbackValue = (fallbackValue as Record<string, unknown>)[k];
-          } else {
-            fallbackValue = undefined;
-            break;
-          }
-        }
+        const fallbackValue = this.lookupKey(translations['en'], key);
         if (typeof fallbackValue === 'string') {
           return this.interpolate(fallbackValue, params);
         }
@@ -55,6 +37,31 @@ export class TranslationService {
     }
 
     return this.interpolate(value, params);
+  }
+
+  private lookupKey(dict: Record<string, unknown>, key: string): unknown {
+    if (!dict) {
+      return undefined;
+    }
+
+    // Direct key lookup (flat json)
+    if (key in dict) {
+      return dict[key];
+    }
+
+    // Nested key traversal (nested json)
+    let current: unknown = dict;
+    const keys = key.split('.');
+
+    for (const k of keys) {
+      if (current && typeof current === 'object' && k in current) {
+        current = (current as Record<string, unknown>)[k];
+      } else {
+        return undefined;
+      }
+    }
+
+    return current;
   }
 
   private interpolate(text: string, params?: Record<string, string | number>): string {

@@ -4,14 +4,17 @@
       <h2>{{ 'employee.list.title' | translate }}</h2>
       <p class="subtitle">{{ 'employee.list.subtitle' | translate }}</p>
     </div>
-    <button
-      pButton
-      severity="primary"
-      (click)="navigateToCreate()"
-    >
-      <i class="pi pi-plus"></i>
-      <span>{{ 'employee.list.addEmployee' | translate }}</span>
-    </button>
+    <div class="header-actions">
+      <lib-language-selector></lib-language-selector>
+      <button
+        pButton
+        severity="primary"
+        (click)="navigateToCreate()"
+      >
+        <i class="pi pi-plus"></i>
+        <span>{{ 'employee.list.addEmployee' | translate }}</span>
+      </button>
+    </div>
   </div>
 
   @if (errorMessage()) {

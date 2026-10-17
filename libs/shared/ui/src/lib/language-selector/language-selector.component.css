@@ -1,0 +1,10 @@
+.language-selector-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.language-selector-wrapper :host ::ng-deep .p-select,
+.language-selector-wrapper .p-select {
+  min-width: 140px;
+}

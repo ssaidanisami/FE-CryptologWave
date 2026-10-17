@@ -1,57 +1,57 @@
 <div class="employee-form-container">
   <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" novalidate>
     <div class="form-group">
-      <label for="name">First Name <span class="required">*</span></label>
+      <label for="name">{{ 'employee.form.firstName' | translate }} <span class="required">*</span></label>
       <input
         id="name"
         type="text"
         formControlName="name"
-        placeholder="Enter first name"
+        [placeholder]="'employee.form.firstName' | translate"
         class="form-control"
         [class.is-invalid]="nameControl.invalid && (nameControl.touched || nameControl.dirty)"
       />
       @if (nameControl.invalid && (nameControl.touched || nameControl.dirty)) {
         <div class="error-feedback">
           @if (nameControl.errors?.['required']) {
-            <small>First name is required.</small>
+            <small>{{ 'employee.form.errors.firstNameRequired' | translate }}</small>
           }
           @if (nameControl.errors?.['minlength']) {
-            <small>First name must be at least 2 characters long.</small>
+            <small>{{ 'employee.form.errors.firstNameMin' | translate }}</small>
           }
           @if (nameControl.errors?.['maxlength']) {
-            <small>First name cannot exceed 50 characters.</small>
+            <small>{{ 'employee.form.errors.firstNameMax' | translate }}</small>
           }
         </div>
       }
     </div>
 
     <div class="form-group">
-      <label for="lastName">Last Name <span class="required">*</span></label>
+      <label for="lastName">{{ 'employee.form.lastName' | translate }} <span class="required">*</span></label>
       <input
         id="lastName"
         type="text"
         formControlName="lastName"
-        placeholder="Enter last name"
+        [placeholder]="'employee.form.lastName' | translate"
         class="form-control"
         [class.is-invalid]="lastNameControl.invalid && (lastNameControl.touched || lastNameControl.dirty)"
       />
       @if (lastNameControl.invalid && (lastNameControl.touched || lastNameControl.dirty)) {
         <div class="error-feedback">
           @if (lastNameControl.errors?.['required']) {
-            <small>Last name is required.</small>
+            <small>{{ 'employee.form.errors.lastNameRequired' | translate }}</small>
           }
           @if (lastNameControl.errors?.['minlength']) {
-            <small>Last name must be at least 2 characters long.</small>
+            <small>{{ 'employee.form.errors.lastNameMin' | translate }}</small>
           }
           @if (lastNameControl.errors?.['maxlength']) {
-            <small>Last name cannot exceed 50 characters.</small>
+            <small>{{ 'employee.form.errors.lastNameMax' | translate }}</small>
           }
         </div>
       }
     </div>
 
     <div class="form-group">
-      <label for="salary">Salary (USD) <span class="required">*</span></label>
+      <label for="salary">{{ 'employee.form.salary' | translate }} <span class="required">*</span></label>
       <input
         id="salary"
         type="number"
@@ -64,33 +64,33 @@
       @if (salaryControl.invalid && (salaryControl.touched || salaryControl.dirty)) {
         <div class="error-feedback">
           @if (salaryControl.errors?.['required']) {
-            <small>Salary is required.</small>
+            <small>{{ 'employee.form.errors.salaryRequired' | translate }}</small>
           }
           @if (salaryControl.errors?.['min']) {
-            <small>Salary must be greater than 0.</small>
+            <small>{{ 'employee.form.errors.salaryMin' | translate }}</small>
           }
           @if (salaryControl.errors?.['pattern']) {
-            <small>Salary must be a valid positive number.</small>
+            <small>{{ 'employee.form.errors.salaryPattern' | translate }}</small>
           }
         </div>
       }
     </div>
 
     <div class="form-group">
-      <label for="department">Department <span class="required">*</span></label>
+      <label for="department">{{ 'employee.form.department' | translate }} <span class="required">*</span></label>
       <p-select
         id="department"
         inputId="department"
         formControlName="department"
         [options]="departments"
-        placeholder="Select Department"
+        [placeholder]="'employee.form.selectDepartment' | translate"
         styleClass="w-full"
         [class.is-invalid]="departmentControl.invalid && (departmentControl.touched || departmentControl.dirty)"
       ></p-select>
       @if (departmentControl.invalid && (departmentControl.touched || departmentControl.dirty)) {
         <div class="error-feedback">
           @if (departmentControl.errors?.['required']) {
-            <small>Department is required.</small>
+            <small>{{ 'employee.form.errors.departmentRequired' | translate }}</small>
           }
         </div>
       }
@@ -104,7 +104,7 @@
         (click)="onCancel()"
         [disabled]="isSubmitting"
       >
-        Cancel
+        {{ 'employee.form.cancel' | translate }}
       </button>
       <button
         type="submit"
@@ -112,7 +112,7 @@
         severity="primary"
         [disabled]="employeeForm.invalid || isSubmitting"
       >
-        {{ isSubmitting ? 'Saving...' : submitButtonText }}
+        {{ isSubmitting ? ('employee.form.saving' | translate) : submitButtonText }}
       </button>
     </div>
   </form>
