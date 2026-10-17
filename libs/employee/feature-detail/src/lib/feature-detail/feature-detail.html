@@ -1,0 +1,101 @@
+<div class="employee-detail-container">
+  <div class="header-nav">
+    <a routerLink="/employees" class="back-link">← Back to Employees</a>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="alert alert-danger">
+      <span>{{ errorMessage() }}</span>
+      <button class="btn-close" (click)="errorMessage.set(null)">×</button>
+    </div>
+  }
+
+  @if (isLoading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading employee details...</p>
+    </div>
+  } @else {
+    @if (mode() === 'create') {
+      <div class="card">
+        <h2 class="card-title">Create New Employee</h2>
+        <lib-employee-form
+          submitButtonText="Create Employee"
+          [isSubmitting]="isSubmitting()"
+          (formSubmit)="onFormSubmit($event)"
+          (formCancel)="onCancel()"
+        />
+      </div>
+    }
+
+    @if (mode() === 'edit') {
+      <div class="card">
+        <h2 class="card-title">Edit Employee</h2>
+        @if (employee()) {
+          <lib-employee-form
+            [employee]="employee()"
+            submitButtonText="Update Employee"
+            [isSubmitting]="isSubmitting()"
+            (formSubmit)="onFormSubmit($event)"
+            (formCancel)="onCancel()"
+          />
+        }
+      </div>
+    }
+
+    @if (mode() === 'view' && employee()) {
+      <div class="card view-card">
+        <div class="view-header">
+          <div>
+            <h2>{{ employee()?.name }} {{ employee()?.lastName }}</h2>
+            <span class="badge">{{ employee()?.department }}</span>
+          </div>
+          <div class="actions">
+            <button
+              pButton
+              severity="primary"
+              (click)="switchToEdit()"
+            >
+              <i class="pi pi-pencil"></i>
+              <span>Edit</span>
+            </button>
+            <button
+              pButton
+              severity="danger"
+              [disabled]="isSubmitting()"
+              (click)="deleteCurrentEmployee()"
+            >
+              <i class="pi pi-trash"></i>
+              <span>{{ isSubmitting() ? 'Deleting...' : 'Delete' }}</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="details-grid">
+          <div class="detail-item">
+            <span class="label">Employee ID</span>
+            <span class="value">#{{ employee()?.id }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">First Name</span>
+            <span class="value">{{ employee()?.name }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Last Name</span>
+            <span class="value">{{ employee()?.lastName }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Department</span>
+            <span class="value">{{ employee()?.department }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Salary</span>
+            <span class="value highlight-salary">
+              {{ employee()?.salary | currency:'USD':'symbol':'1.2-2' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    }
+  }
+</div>

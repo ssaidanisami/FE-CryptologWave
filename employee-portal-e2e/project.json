@@ -1,0 +1,10 @@
+{
+  "name": "employee-portal-e2e",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "employee-portal-e2e/src",
+  "tags": [],
+  "implicitDependencies": ["employee-portal"],
+  "// targets": "to see all targets run: nx show project employee-portal-e2e --web",
+  "targets": {}
+}

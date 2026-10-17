@@ -1,0 +1,11 @@
+{
+  "name": "@fe-cryptolog-wave/shared-utils",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^22.1.0",
+    "@angular/core": "^22.1.0",
+    "keycloak-angular": "^22.0.0"
+  },
+  "sideEffects": false,
+  "private": true
+}

@@ -14,7 +14,20 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "strict": false,
-    "paths": {}
+    "paths": {
+      "@fe-cryptolog-wave/data-access": [
+        "./libs/employee/data-access/src/index.ts"
+      ],
+      "@fe-cryptolog-wave/ui": ["./libs/employee/ui/src/index.ts"],
+      "@fe-cryptolog-wave/feature-list": [
+        "./libs/employee/feature-list/src/index.ts"
+      ],
+      "@fe-cryptolog-wave/feature-detail": [
+        "./libs/employee/feature-detail/src/index.ts"
+      ],
+      "@fe-cryptolog-wave/shared-ui": ["./libs/shared/ui/src/index.ts"],
+      "@fe-cryptolog-wave/shared-utils": ["./libs/shared/utils/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
