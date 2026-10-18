@@ -1,4 +1,5 @@
 <div class="department-container">
+  <lib-confirmation-selector></lib-confirmation-selector>
   <a routerLink="/employees" class="back-link">{{ 'department.back' | translate }}</a>
 
   <div class="header-section">
@@ -26,7 +27,11 @@
   }
 
   <div class="create-card">
-    <h3>{{ 'department.create.title' | translate }}</h3>
+    <h3>
+      {{ editingDepartment()
+        ? ('department.edit.title' | translate : { name: editingDepartment()?.name ?? '' })
+        : ('department.create.title' | translate) }}
+    </h3>
     <form
       [formGroup]="departmentForm"
       (ngSubmit)="onSubmit()"
@@ -61,6 +66,18 @@
       </div>
 
       <div class="form-actions">
+        @if (editingDepartment()) {
+          <button
+            pButton
+            type="button"
+            severity="secondary"
+            [outlined]="true"
+            [disabled]="isSubmitting()"
+            (click)="cancelEdit()"
+          >
+            <span>{{ 'department.edit.cancel' | translate }}</span>
+          </button>
+        }
         <button
           pButton
           type="button"
@@ -77,8 +94,13 @@
           severity="primary"
           [disabled]="isSubmitting()"
         >
-          <i class="pi pi-plus"></i>
-          <span>{{ isSubmitting() ? ('department.create.submitting' | translate) : ('department.create.submit' | translate) }}</span>
+          @if (editingDepartment()) {
+            <i class="pi pi-check"></i>
+            <span>{{ isSubmitting() ? ('department.edit.submitting' | translate) : ('department.edit.submit' | translate) }}</span>
+          } @else {
+            <i class="pi pi-plus"></i>
+            <span>{{ isSubmitting() ? ('department.create.submitting' | translate) : ('department.create.submit' | translate) }}</span>
+          }
         </button>
       </div>
     </form>
@@ -125,6 +147,7 @@
             <tr>
               <th>{{ 'department.list.table.id' | translate }}</th>
               <th>{{ 'department.list.table.name' | translate }}</th>
+              <th class="text-right">{{ 'department.list.table.actions' | translate }}</th>
             </tr>
           </ng-template>
           <ng-template #body let-dept>
@@ -132,6 +155,34 @@
               <td>#{{ dept.id }}</td>
               <td>
                 <span class="badge">{{ dept.name }}</span>
+              </td>
+              <td class="text-right action-buttons">
+                <button
+                  pButton
+                  type="button"
+                  [title]="'department.list.actions.editTitle' | translate"
+                  size="small"
+                  [outlined]="true"
+                  severity="info"
+                  [disabled]="isSubmitting() || deletingId() === dept.id"
+                  (click)="startEdit(dept)"
+                >
+                  <i class="pi pi-pencil"></i>
+                  <span>{{ 'department.list.actions.edit' | translate }}</span>
+                </button>
+                <button
+                  pButton
+                  type="button"
+                  [title]="'department.list.actions.deleteTitle' | translate"
+                  size="small"
+                  [outlined]="true"
+                  severity="danger"
+                  [disabled]="deletingId() === dept.id"
+                  (click)="confirmDelete($event, dept)"
+                >
+                  <i class="pi pi-trash"></i>
+                  <span>{{ deletingId() === dept.id ? ('department.list.actions.deleting' | translate) : ('department.list.actions.delete' | translate) }}</span>
+                </button>
               </td>
             </tr>
           </ng-template>

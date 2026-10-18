@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import {
@@ -14,8 +14,12 @@ import {
   DepartmentService,
   Department,
   CreateDepartmentDto,
+  UpdateDepartmentDto,
 } from '@fe-cryptolog-wave/data-access';
-import { LanguageSelectorComponent } from '@fe-cryptolog-wave/shared-ui';
+import {
+  ConfirmationSelectorComponent,
+  LanguageSelectorComponent,
+} from '@fe-cryptolog-wave/shared-ui';
 import { TranslatePipe, TranslationService } from '@fe-cryptolog-wave/shared-utils';
 
 @Component({
@@ -29,6 +33,7 @@ import { TranslatePipe, TranslationService } from '@fe-cryptolog-wave/shared-uti
     TableModule,
     TranslatePipe,
     LanguageSelectorComponent,
+    ConfirmationSelectorComponent,
   ],
   templateUrl: './feature-department.html',
   styleUrl: './feature-department.scss',
@@ -38,11 +43,15 @@ export class FeatureDepartment implements OnInit {
   private readonly translationService = inject(TranslationService);
   private readonly fb = inject(FormBuilder);
 
+  private readonly confirmation = viewChild.required(ConfirmationSelectorComponent);
+
   departments = signal<Department[]>([]);
   isLoading = signal<boolean>(false);
   isSubmitting = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
   successMessage = signal<string | null>(null);
+  editingDepartment = signal<Department | null>(null);
+  deletingId = signal<string | number | null>(null);
 
   departmentForm: FormGroup = this.fb.group({
     name: [
@@ -84,13 +93,44 @@ export class FeatureDepartment implements OnInit {
       return;
     }
 
-    const payload: CreateDepartmentDto = {
-      name: (this.departmentForm.value.name as string).trim(),
-    };
+    const name = (this.departmentForm.value.name as string).trim();
+    const editing = this.editingDepartment();
 
     this.isSubmitting.set(true);
     this.errorMessage.set(null);
     this.successMessage.set(null);
+
+    if (editing) {
+      const payload: UpdateDepartmentDto = { name };
+      this.departmentService.updateDepartment(editing.id, payload).subscribe({
+        next: (updated) => {
+          this.departments.update((list) =>
+            list.map((d) =>
+              d.id === editing.id
+                ? { ...d, ...(updated ?? {}), name: updated?.name ?? name }
+                : d
+            )
+          );
+          this.successMessage.set(
+            this.translationService.translate('department.updateSuccess', {
+              name,
+            })
+          );
+          this.cancelEdit();
+          this.isSubmitting.set(false);
+        },
+        error: (err) => {
+          this.errorMessage.set(
+            err?.message ||
+              this.translationService.translate('department.errors.updateFailed')
+          );
+          this.isSubmitting.set(false);
+        },
+      });
+      return;
+    }
+
+    const payload: CreateDepartmentDto = { name };
 
     this.departmentService.createDepartment(payload).subscribe({
       next: (created) => {
@@ -117,6 +157,61 @@ export class FeatureDepartment implements OnInit {
   }
 
   onReset(): void {
+    this.departmentForm.reset({ name: this.editingDepartment()?.name ?? '' });
+  }
+
+  startEdit(department: Department): void {
+    this.editingDepartment.set(department);
+    this.errorMessage.set(null);
+    this.successMessage.set(null);
+    this.departmentForm.reset({ name: department.name });
+  }
+
+  cancelEdit(): void {
+    this.editingDepartment.set(null);
     this.departmentForm.reset({ name: '' });
+  }
+
+  confirmDelete(event: Event, department: Department): void {
+    this.confirmation()
+      .confirm(event, {
+        messageKey: 'department.confirmDelete',
+        messageParams: { name: department.name },
+      })
+      .subscribe((confirmed) => {
+        if (confirmed) {
+          this.deleteDepartment(department);
+        }
+      });
+  }
+
+  deleteDepartment(department: Department): void {
+    this.deletingId.set(department.id);
+    this.errorMessage.set(null);
+    this.successMessage.set(null);
+
+    this.departmentService.deleteDepartment(department.id).subscribe({
+      next: () => {
+        this.departments.update((list) =>
+          list.filter((d) => d.id !== department.id)
+        );
+        if (this.editingDepartment()?.id === department.id) {
+          this.cancelEdit();
+        }
+        this.successMessage.set(
+          this.translationService.translate('department.deleteSuccess', {
+            name: department.name,
+          })
+        );
+        this.deletingId.set(null);
+      },
+      error: (err) => {
+        this.errorMessage.set(
+          err?.message ||
+            this.translationService.translate('department.errors.deleteFailed')
+        );
+        this.deletingId.set(null);
+      },
+    });
   }
 }

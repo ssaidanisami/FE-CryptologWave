@@ -4,3 +4,5 @@ export interface Department {
 }
 
 export type CreateDepartmentDto = Omit<Department, 'id'>;
+
+export type UpdateDepartmentDto = Omit<Department, 'id'>;

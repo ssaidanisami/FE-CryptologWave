@@ -1,7 +1,11 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, catchError, map, shareReplay, tap, throwError } from 'rxjs';
-import { Department, CreateDepartmentDto } from './department.model';
+import {
+  Department,
+  CreateDepartmentDto,
+  UpdateDepartmentDto,
+} from './department.model';
 import { PageResponse } from './employee.model';
 
 type DepartmentsApiResponse =
@@ -48,6 +52,25 @@ export class DepartmentService {
 
   createDepartment(department: CreateDepartmentDto): Observable<Department> {
     return this.http.post<Department>(this.apiUrl, department).pipe(
+      tap(() => this.invalidateCache()),
+      catchError(this.handleError)
+    );
+  }
+
+  updateDepartment(
+    id: string | number,
+    department: UpdateDepartmentDto
+  ): Observable<Department> {
+    return this.http
+      .put<Department>(`${this.apiUrl}/${id}`, department)
+      .pipe(
+        tap(() => this.invalidateCache()),
+        catchError(this.handleError)
+      );
+  }
+
+  deleteDepartment(id: string | number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
       tap(() => this.invalidateCache()),
       catchError(this.handleError)
     );

@@ -1,10 +1,13 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { EmployeeService, Employee } from '@fe-cryptolog-wave/data-access';
-import { LanguageSelectorComponent } from '@fe-cryptolog-wave/shared-ui';
+import {
+  ConfirmationSelectorComponent,
+  LanguageSelectorComponent,
+} from '@fe-cryptolog-wave/shared-ui';
 import { TranslatePipe, TranslationService } from '@fe-cryptolog-wave/shared-utils';
 
 @Component({
@@ -17,6 +20,7 @@ import { TranslatePipe, TranslationService } from '@fe-cryptolog-wave/shared-uti
     TableModule,
     TranslatePipe,
     LanguageSelectorComponent,
+    ConfirmationSelectorComponent,
   ],
   templateUrl: './feature-list.html',
   styleUrl: './feature-list.scss',
@@ -25,6 +29,8 @@ export class FeatureList implements OnInit {
   private readonly employeeService = inject(EmployeeService);
   private readonly router = inject(Router);
   private readonly translationService = inject(TranslationService);
+
+  private readonly confirmation = viewChild.required(ConfirmationSelectorComponent);
 
   employees = signal<Employee[]>([]);
   isLoading = signal<boolean>(false);
@@ -65,16 +71,20 @@ export class FeatureList implements OnInit {
     this.router.navigate(['/employees', id]);
   }
 
-  deleteEmployee(employee: Employee): void {
-    const confirmMessage = this.translationService.translate(
-      'employee.list.confirmDelete',
-      { name: employee.name, lastName: employee.lastName }
-    );
-    const confirmed = confirm(confirmMessage);
-    if (!confirmed) {
-      return;
-    }
+  confirmDelete(event: Event, employee: Employee): void {
+    this.confirmation()
+      .confirm(event, {
+        messageKey: 'employee.list.confirmDelete',
+        messageParams: { name: employee.name, lastName: employee.lastName },
+      })
+      .subscribe((confirmed) => {
+        if (confirmed) {
+          this.deleteEmployee(employee);
+        }
+      });
+  }
 
+  deleteEmployee(employee: Employee): void {
     this.deletingId.set(employee.id);
     this.employeeService.deleteEmployee(employee.id).subscribe({
       next: () => {
