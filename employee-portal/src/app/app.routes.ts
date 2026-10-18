@@ -12,6 +12,13 @@ export const appRoutes: Route[] = [
       import('@fe-cryptolog-wave/feature-list').then((m) => m.FeatureList),
   },
   {
+    path: 'departments',
+    loadComponent: () =>
+      import('@fe-cryptolog-wave/feature-department').then(
+        (m) => m.FeatureDepartment
+      ),
+  },
+  {
     path: 'employees/new',
     loadComponent: () =>
       import('@fe-cryptolog-wave/feature-detail').then((m) => m.FeatureDetail),

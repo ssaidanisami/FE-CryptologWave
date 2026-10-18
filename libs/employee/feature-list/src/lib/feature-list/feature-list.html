@@ -6,6 +6,15 @@
     </div>
     <div class="header-actions">
       <lib-language-selector></lib-language-selector>
+      <a
+        pButton
+        severity="secondary"
+        [outlined]="true"
+        routerLink="/departments"
+      >
+        <i class="pi pi-sitemap"></i>
+        <span>{{ 'employee.list.departments' | translate }}</span>
+      </a>
       <button
         pButton
         severity="primary"

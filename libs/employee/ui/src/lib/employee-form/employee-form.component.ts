@@ -34,20 +34,13 @@ export class EmployeeFormComponent implements OnInit, OnChanges {
   @Input() employee: Employee | null = null;
   @Input() isSubmitting = false;
   @Input() submitButtonText = 'Save Employee';
+  @Input() departments: string[] = [];
+  @Input() departmentsLoading = false;
 
   @Output() formSubmit = new EventEmitter<CreateEmployeeDto>();
   @Output() formCancel = new EventEmitter<void>();
 
   employeeForm!: FormGroup;
-
-  readonly departments = [
-    'Engineering',
-    'Human Resources',
-    'Marketing',
-    'Sales',
-    'Finance',
-    'Operations',
-  ];
 
   ngOnInit(): void {
     this.initForm();

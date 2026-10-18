@@ -83,6 +83,7 @@
         inputId="department"
         formControlName="department"
         [options]="departments"
+        [loading]="departmentsLoading"
         [placeholder]="'employee.form.selectDepartment' | translate"
         styleClass="w-full"
         [class.is-invalid]="departmentControl.invalid && (departmentControl.touched || departmentControl.dirty)"

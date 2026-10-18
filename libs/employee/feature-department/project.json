@@ -1,0 +1,43 @@
+{
+  "name": "feature-department",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/employee/feature-department/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": ["scope:employee", "type:feature"],
+  "targets": {
+    "build": {
+      "executor": "@nx/angular:ng-packagr-lite",
+      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "project": "libs/employee/feature-department/ng-package.json",
+        "tsConfig": "libs/employee/feature-department/tsconfig.lib.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/employee/feature-department/tsconfig.lib.prod.json"
+        },
+        "development": {}
+      }
+    },
+    "test": {
+      "executor": "@nx/angular:unit-test",
+      "options": {
+        "watch": false
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "component-test": {
+      "executor": "@nx/cypress:cypress",
+      "options": {
+        "cypressConfig": "libs/employee/feature-department/cypress.config.ts",
+        "testingType": "component",
+        "skipServe": true,
+        "devServerTarget": "FE-CryptologWave:build"
+      }
+    }
+  }
+}

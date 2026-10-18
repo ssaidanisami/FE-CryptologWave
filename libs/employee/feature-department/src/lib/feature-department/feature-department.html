@@ -1,0 +1,142 @@
+<div class="department-container">
+  <a routerLink="/employees" class="back-link">{{ 'department.back' | translate }}</a>
+
+  <div class="header-section">
+    <div>
+      <h2>{{ 'department.title' | translate }}</h2>
+      <p class="subtitle">{{ 'department.subtitle' | translate }}</p>
+    </div>
+    <div class="header-actions">
+      <lib-language-selector></lib-language-selector>
+    </div>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="alert alert-danger">
+      <span>{{ errorMessage() }}</span>
+      <button class="btn-close" (click)="errorMessage.set(null)">×</button>
+    </div>
+  }
+
+  @if (successMessage()) {
+    <div class="alert alert-success">
+      <span>{{ successMessage() }}</span>
+      <button class="btn-close" (click)="successMessage.set(null)">×</button>
+    </div>
+  }
+
+  <div class="create-card">
+    <h3>{{ 'department.create.title' | translate }}</h3>
+    <form
+      [formGroup]="departmentForm"
+      (ngSubmit)="onSubmit()"
+      class="department-form"
+      novalidate
+    >
+      <div class="form-group">
+        <label for="departmentName">
+          {{ 'department.create.nameLabel' | translate }}
+          <span class="required">*</span>
+        </label>
+        <input
+          id="departmentName"
+          type="text"
+          formControlName="name"
+          class="form-control"
+          [class.is-invalid]="nameControl.invalid && nameControl.touched"
+          [placeholder]="'department.create.namePlaceholder' | translate"
+          autocomplete="off"
+        />
+        @if (nameControl.invalid && nameControl.touched) {
+          <div class="invalid-feedback">
+            @if (nameControl.errors?.['required']) {
+              <span>{{ 'department.create.errors.nameRequired' | translate }}</span>
+            } @else if (nameControl.errors?.['minlength']) {
+              <span>{{ 'department.create.errors.nameMinLength' | translate }}</span>
+            } @else if (nameControl.errors?.['maxlength']) {
+              <span>{{ 'department.create.errors.nameMaxLength' | translate }}</span>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="form-actions">
+        <button
+          pButton
+          type="button"
+          severity="secondary"
+          [outlined]="true"
+          [disabled]="isSubmitting()"
+          (click)="onReset()"
+        >
+          <span>{{ 'department.create.reset' | translate }}</span>
+        </button>
+        <button
+          pButton
+          type="submit"
+          severity="primary"
+          [disabled]="isSubmitting()"
+        >
+          <i class="pi pi-plus"></i>
+          <span>{{ isSubmitting() ? ('department.create.submitting' | translate) : ('department.create.submit' | translate) }}</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="list-section">
+    <div class="list-header">
+      <h3>{{ 'department.list.title' | translate }}</h3>
+      <button
+        pButton
+        type="button"
+        size="small"
+        severity="secondary"
+        [outlined]="true"
+        [disabled]="isLoading()"
+        (click)="loadDepartments(true)"
+      >
+        <i class="pi pi-refresh"></i>
+        <span>{{ 'department.list.refresh' | translate }}</span>
+      </button>
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>{{ 'department.list.loading' | translate }}</p>
+      </div>
+    } @else if (!departments() || departments().length === 0) {
+      <div class="empty-state">
+        <p>{{ 'department.list.noDepartmentsFound' | translate }}</p>
+      </div>
+    } @else {
+      <div class="table-responsive">
+        <p-table
+          [value]="departments()"
+          [paginator]="true"
+          [rows]="10"
+          [rowsPerPageOptions]="[5, 10, 25, 50]"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+          class="p-datatable-striped"
+        >
+          <ng-template #header>
+            <tr>
+              <th>{{ 'department.list.table.id' | translate }}</th>
+              <th>{{ 'department.list.table.name' | translate }}</th>
+            </tr>
+          </ng-template>
+          <ng-template #body let-dept>
+            <tr>
+              <td>#{{ dept.id }}</td>
+              <td>
+                <span class="badge">{{ dept.name }}</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    }
+  </div>
+</div>

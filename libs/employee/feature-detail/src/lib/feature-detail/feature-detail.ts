@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import {
   EmployeeService,
+  DepartmentService,
   Employee,
   CreateEmployeeDto,
 } from '@fe-cryptolog-wave/data-access';
@@ -31,6 +32,7 @@ export class FeatureDetail implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly employeeService = inject(EmployeeService);
+  private readonly departmentService = inject(DepartmentService);
   private readonly translationService = inject(TranslationService);
 
   mode = signal<FeatureDetailMode>('view');
@@ -39,6 +41,8 @@ export class FeatureDetail implements OnInit {
   isLoading = signal<boolean>(false);
   isSubmitting = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
+  departments = signal<string[]>([]);
+  departmentsLoading = signal<boolean>(false);
 
   ngOnInit(): void {
     const routeSnapshot = this.route.snapshot;
@@ -46,6 +50,7 @@ export class FeatureDetail implements OnInit {
 
     if (urlSegments.includes('new') || routeSnapshot.routeConfig?.path === 'new') {
       this.mode.set('create');
+      this.loadDepartments();
       return;
     }
 
@@ -54,6 +59,7 @@ export class FeatureDetail implements OnInit {
       this.employeeId.set(id);
       if (urlSegments.includes('edit')) {
         this.mode.set('edit');
+        this.loadDepartments();
       } else {
         this.mode.set('view');
       }
@@ -79,10 +85,28 @@ export class FeatureDetail implements OnInit {
     });
   }
 
+  loadDepartments(): void {
+    this.departmentsLoading.set(true);
+
+    this.departmentService.getDepartmentNames().subscribe({
+      next: (names) => {
+        this.departments.set(names);
+        this.departmentsLoading.set(false);
+      },
+      error: (err) => {
+        this.errorMessage.set(
+          err?.message || this.translationService.translate('employee.detail.errors.departmentsLoadFailed')
+        );
+        this.departmentsLoading.set(false);
+      },
+    });
+  }
+
   switchToEdit(): void {
     if (this.employeeId()) {
       this.router.navigate(['/employees', this.employeeId(), 'edit']);
       this.mode.set('edit');
+      this.loadDepartments();
     }
   }
 

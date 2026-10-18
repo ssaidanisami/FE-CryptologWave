@@ -21,6 +21,8 @@
       <div class="card">
         <h2 class="card-title">{{ 'employee.detail.createTitle' | translate }}</h2>
         <lib-employee-form
+          [departments]="departments()"
+          [departmentsLoading]="departmentsLoading()"
           [submitButtonText]="'employee.detail.createButton' | translate"
           [isSubmitting]="isSubmitting()"
           (formSubmit)="onFormSubmit($event)"
@@ -35,6 +37,8 @@
         @if (employee()) {
           <lib-employee-form
             [employee]="employee()"
+            [departments]="departments()"
+            [departmentsLoading]="departmentsLoading()"
             [submitButtonText]="'employee.detail.updateButton' | translate"
             [isSubmitting]="isSubmitting()"
             (formSubmit)="onFormSubmit($event)"
