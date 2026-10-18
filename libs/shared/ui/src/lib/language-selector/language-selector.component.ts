@@ -21,7 +21,7 @@ export class LanguageSelectorComponent {
 
   readonly languages: LanguageOption[] = [
     { label: 'English', value: 'en' },
-    { label: 'FranÃ§ais', value: 'fr' },
+    { label: 'Français', value: 'fr' },
   ];
 
   readonly currentLanguage = this.translationService.currentLanguage;
