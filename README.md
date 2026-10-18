@@ -11,19 +11,19 @@
 To run the dev server for your app, use:
 
 ```sh
-npx nx serve FE-CryptologWave
+npx nx serve employee-portal
 ```
 
 To create a production bundle:
 
 ```sh
-npx nx build FE-CryptologWave
+npx nx build employee-portal
 ```
 
 To see all available targets to run for a project, run:
 
 ```sh
-npx nx show project FE-CryptologWave
+npx nx show project employee-portal
 ```
 
 These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
