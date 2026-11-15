@@ -15,6 +15,7 @@ import {
 export class EmployeeService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = 'http://localhost:8082/api/v1/employees';
+  private readonly reportsApiUrl = 'http://localhost:8082/api/v1/reports/employees';
 
   getEmployees(page?: number, size?: number): Observable<Employee[]> {
     let params = new HttpParams();
@@ -96,6 +97,20 @@ export class EmployeeService {
   deleteEmployee(id: string | number): Observable<void> {
     return this.http
       .delete<void>(`${this.apiUrl}/${id}`)
+      .pipe(catchError(this.handleError));
+  }
+
+  getEmployeesPdfReport(page?: number, size?: number): Observable<Blob> {
+    let params = new HttpParams();
+    if (page !== undefined && page !== null) {
+      params = params.set('page', page.toString());
+    }
+    if (size !== undefined && size !== null) {
+      params = params.set('size', size.toString());
+    }
+
+    return this.http
+      .get(this.reportsApiUrl, { params, responseType: 'blob' })
       .pipe(catchError(this.handleError));
   }
 

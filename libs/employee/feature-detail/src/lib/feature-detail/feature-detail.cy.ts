@@ -3,7 +3,7 @@ import { FeatureDetail } from './feature-detail';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeng/themes/aura';
-import { EmployeeService, Employee } from '@fe-cryptolog-wave/data-access';
+import { EmployeeService, DepartmentService, Employee } from '@fe-cryptolog-wave/data-access';
 import { TranslationService } from '@fe-cryptolog-wave/shared-utils';
 import { of, throwError } from 'rxjs';
 
@@ -16,7 +16,10 @@ describe('FeatureDetail Component Tests', () => {
     salary: 72000,
   };
 
+  const mockDepartments: string[] = ['Engineering', 'Human Resources', 'Marketing', 'Sales'];
+
   let mockEmployeeService: Partial<EmployeeService>;
+  let mockDepartmentService: Partial<DepartmentService>;
   let mockRouter: Partial<Router>;
 
   beforeEach(() => {
@@ -27,6 +30,11 @@ describe('FeatureDetail Component Tests', () => {
       createEmployee: (dto: any) => of({ id: '124', ...dto }),
       updateEmployee: (id: string | number, dto: any) => of({ id, ...dto }),
       deleteEmployee: (id: string | number) => of(void 0),
+    };
+
+    mockDepartmentService = {
+      getDepartmentNames: () => of(mockDepartments),
+      getDepartments: () => of(mockDepartments.map((d) => ({ id: d, name: d }))),
     };
 
     mockRouter = {
@@ -42,6 +50,7 @@ describe('FeatureDetail Component Tests', () => {
           providePrimeNG({ theme: { preset: Aura } }),
           TranslationService,
           { provide: EmployeeService, useValue: mockEmployeeService },
+          { provide: DepartmentService, useValue: mockDepartmentService },
           {
             provide: ActivatedRoute,
             useValue: {
@@ -88,6 +97,7 @@ describe('FeatureDetail Component Tests', () => {
           providePrimeNG({ theme: { preset: Aura } }),
           TranslationService,
           { provide: EmployeeService, useValue: mockEmployeeService },
+          { provide: DepartmentService, useValue: mockDepartmentService },
           {
             provide: ActivatedRoute,
             useValue: {
@@ -130,6 +140,7 @@ describe('FeatureDetail Component Tests', () => {
           providePrimeNG({ theme: { preset: Aura } }),
           TranslationService,
           { provide: EmployeeService, useValue: mockEmployeeService },
+          { provide: DepartmentService, useValue: mockDepartmentService },
           {
             provide: ActivatedRoute,
             useValue: {
@@ -169,6 +180,7 @@ describe('FeatureDetail Component Tests', () => {
           providePrimeNG({ theme: { preset: Aura } }),
           TranslationService,
           { provide: EmployeeService, useValue: mockEmployeeService },
+          { provide: DepartmentService, useValue: mockDepartmentService },
           {
             provide: ActivatedRoute,
             useValue: {

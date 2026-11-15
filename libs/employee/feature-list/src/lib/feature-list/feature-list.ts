@@ -34,8 +34,11 @@ export class FeatureList implements OnInit {
 
   employees = signal<Employee[]>([]);
   isLoading = signal<boolean>(false);
+  isExportingPdf = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
   deletingId = signal<string | number | null>(null);
+  first = signal<number>(0);
+  rows = signal<number>(10);
 
   ngOnInit(): void {
     this.loadEmployees();
@@ -59,8 +62,43 @@ export class FeatureList implements OnInit {
     });
   }
 
+  onPageChange(event: { first?: number; rows?: number }): void {
+    if (event.first !== undefined) {
+      this.first.set(event.first);
+    }
+    if (event.rows !== undefined) {
+      this.rows.set(event.rows);
+    }
+  }
+
   navigateToCreate(): void {
     this.router.navigate(['/employees/new']);
+  }
+
+  exportPdf(): void {
+    this.isExportingPdf.set(true);
+    this.errorMessage.set(null);
+
+    const pageSize = this.rows() || 10;
+    const pageIndex = Math.floor(this.first() / pageSize);
+
+    this.employeeService.getEmployeesPdfReport(pageIndex, pageSize).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'employees-report.pdf';
+        link.click();
+        window.URL.revokeObjectURL(url);
+        this.isExportingPdf.set(false);
+      },
+      error: (err) => {
+        this.errorMessage.set(
+          err?.message || this.translationService.translate('employee.list.errors.exportFailed')
+        );
+        this.isExportingPdf.set(false);
+      },
+    });
   }
 
   navigateToEdit(id: string | number): void {

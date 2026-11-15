@@ -18,6 +18,17 @@
       </a>
       <button
         pButton
+        severity="secondary"
+        [outlined]="true"
+        [loading]="isExportingPdf()"
+        [disabled]="isExportingPdf()"
+        (click)="exportPdf()"
+      >
+        <i class="pi pi-file-pdf"></i>
+        <span>{{ isExportingPdf() ? ('employee.list.exportingPdf' | translate) : ('employee.list.exportPdf' | translate) }}</span>
+      </button>
+      <button
+        pButton
         severity="primary"
         (click)="navigateToCreate()"
       >
@@ -56,11 +67,13 @@
       <p-table
         [value]="employees()"
         [paginator]="true"
-        [rows]="10"
+        [rows]="rows()"
+        [first]="first()"
         [rowsPerPageOptions]="[5, 10, 25, 50]"
         [showCurrentPageReport]="true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
         class="p-datatable-striped"
+        (onPage)="onPageChange($event)"
       >
         <ng-template #header>
           <tr>

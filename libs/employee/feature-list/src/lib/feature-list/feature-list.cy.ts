@@ -32,7 +32,8 @@ describe('FeatureList Component Tests', () => {
 
     mockEmployeeService = {
       getEmployees: () => of(mockEmployees),
-      deleteEmployee: (id: string | number) => of(void 0),
+      deleteEmployee: () => of(void 0),
+      getEmployeesPdfReport: () => of(new Blob(['PDF_CONTENT'], { type: 'application/pdf' })),
     };
   });
 
@@ -105,7 +106,7 @@ describe('FeatureList Component Tests', () => {
 
     cy.mount(FeatureList).then(() => {
       const router = TestBed.inject(Router);
-      cy.stub(router, 'navigate').resolves(true).as('navigateSpy');
+      cy.stub(router, 'navigate').as('navigateSpy').resolves(true);
     });
 
     cy.contains('button', 'Add Employee').click();
@@ -113,8 +114,6 @@ describe('FeatureList Component Tests', () => {
   });
 
   it('handles employee deletion with confirmation', () => {
-    cy.stub(window, 'confirm').returns(true);
-
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
@@ -128,6 +127,7 @@ describe('FeatureList Component Tests', () => {
 
     cy.get('p-table tbody tr').should('have.length', 2);
     cy.get('p-table tbody tr').first().contains('Delete').click();
+    cy.contains('button', 'Yes').click();
     cy.get('p-table tbody tr').should('have.length', 1);
     cy.contains('Alice Smith').should('not.exist');
     cy.contains('Bob Johnson').should('be.visible');
@@ -146,5 +146,20 @@ describe('FeatureList Component Tests', () => {
     cy.mount(FeatureList);
 
     cy.get('.p-paginator').should('be.visible');
+  });
+
+  it('renders export PDF button and triggers report download', () => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        providePrimeNG({ theme: { preset: Aura } }),
+        TranslationService,
+        { provide: EmployeeService, useValue: mockEmployeeService },
+      ],
+    });
+
+    cy.mount(FeatureList);
+
+    cy.contains('button', 'Export PDF').should('be.visible').click();
   });
 });

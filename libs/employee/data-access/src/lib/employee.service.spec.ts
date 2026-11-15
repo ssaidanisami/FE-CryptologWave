@@ -178,4 +178,30 @@ describe('EmployeeService', () => {
     expect(req.request.method).toBe('DELETE');
     req.flush(null);
   });
+
+  it('should fetch employees pdf report as blob without params', () => {
+    const mockBlob = new Blob(['%PDF-1.4...'], { type: 'application/pdf' });
+
+    service.getEmployeesPdfReport().subscribe((blob) => {
+      expect(blob).toEqual(mockBlob);
+    });
+
+    const req = httpMock.expectOne('http://localhost:8082/api/v1/reports/employees');
+    expect(req.request.method).toBe('GET');
+    expect(req.request.responseType).toBe('blob');
+    req.flush(mockBlob);
+  });
+
+  it('should pass pagination params to getEmployeesPdfReport', () => {
+    const mockBlob = new Blob(['%PDF-1.4...'], { type: 'application/pdf' });
+
+    service.getEmployeesPdfReport(2, 5).subscribe((blob) => {
+      expect(blob).toEqual(mockBlob);
+    });
+
+    const req = httpMock.expectOne('http://localhost:8082/api/v1/reports/employees?page=2&size=5');
+    expect(req.request.method).toBe('GET');
+    expect(req.request.responseType).toBe('blob');
+    req.flush(mockBlob);
+  });
 });

@@ -11,6 +11,7 @@ describe('FeatureList', () => {
   let mockEmployeeService: {
     getEmployees: ReturnType<typeof vi.fn>;
     deleteEmployee: ReturnType<typeof vi.fn>;
+    getEmployeesPdfReport: ReturnType<typeof vi.fn>;
   };
   let mockRouter: {
     navigate: ReturnType<typeof vi.fn>;
@@ -26,6 +27,7 @@ describe('FeatureList', () => {
     mockEmployeeService = {
       getEmployees: vi.fn().mockReturnValue(of(sampleEmployees)),
       deleteEmployee: vi.fn().mockReturnValue(of(void 0)),
+      getEmployeesPdfReport: vi.fn().mockReturnValue(of(new Blob(['test'], { type: 'application/pdf' }))),
     };
 
     mockRouter = {
@@ -75,13 +77,15 @@ describe('FeatureList', () => {
     fixture.detectChanges();
     let compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('h2')?.textContent).toContain('Employee Directory');
-    expect(compiled.querySelector('button[pButton]')?.textContent).toContain('Add Employee');
+    expect(compiled.textContent).toContain('Add Employee');
+    expect(compiled.textContent).toContain('Export PDF');
 
     translationService.setLanguage('fr');
     fixture.detectChanges();
     compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('h2')?.textContent).toContain('Annuaire des Employés');
-    expect(compiled.querySelector('button[pButton]')?.textContent).toContain('Ajouter un Employé');
+    expect(compiled.textContent).toContain('Ajouter un Employé');
+    expect(compiled.textContent).toContain('Exporter en PDF');
   });
 
   it('should navigate to create employee', () => {
@@ -109,23 +113,50 @@ describe('FeatureList', () => {
   });
 
   it('should delete employee after confirmation with translated prompt', () => {
-    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const confirmSpy = vi.spyOn(component['confirmation'](), 'confirm').mockReturnValue(of(true));
 
-    translationService.setLanguage('en');
-    component.deleteEmployee(sampleEmployees[0]);
+    component.confirmDelete(new MouseEvent('click'), sampleEmployees[0]);
 
-    expect(confirmSpy).toHaveBeenCalledWith('Are you sure you want to delete John Doe?');
+    expect(confirmSpy).toHaveBeenCalled();
     expect(mockEmployeeService.deleteEmployee).toHaveBeenCalledWith(1);
     expect(component.employees().length).toBe(1);
     expect(component.employees()[0].id).toBe(2);
   });
 
   it('should not delete employee if not confirmed', () => {
-    vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const confirmSpy = vi.spyOn(component['confirmation'](), 'confirm').mockReturnValue(of(false));
 
-    component.deleteEmployee(sampleEmployees[0]);
+    component.confirmDelete(new MouseEvent('click'), sampleEmployees[0]);
 
+    expect(confirmSpy).toHaveBeenCalled();
     expect(mockEmployeeService.deleteEmployee).not.toHaveBeenCalled();
     expect(component.employees().length).toBe(2);
+  });
+
+  it('should generate and download pdf report with current page and size', () => {
+    const mockBlob = new Blob(['%PDF-1.4...'], { type: 'application/pdf' });
+    mockEmployeeService.getEmployeesPdfReport.mockReturnValue(of(mockBlob));
+
+    const createObjectURLSpy = vi.spyOn(window.URL, 'createObjectURL').mockReturnValue('blob:http://localhost/mock-url');
+    const revokeObjectURLSpy = vi.spyOn(window.URL, 'revokeObjectURL').mockReturnValue();
+
+    component.onPageChange({ first: 10, rows: 5 });
+    component.exportPdf();
+
+    expect(mockEmployeeService.getEmployeesPdfReport).toHaveBeenCalledWith(2, 5);
+    expect(createObjectURLSpy).toHaveBeenCalledWith(mockBlob);
+    expect(revokeObjectURLSpy).toHaveBeenCalledWith('blob:http://localhost/mock-url');
+    expect(component.isExportingPdf()).toBeFalsy();
+  });
+
+  it('should handle error when exporting pdf report fails', () => {
+    mockEmployeeService.getEmployeesPdfReport.mockReturnValue(
+      throwError(() => new Error('Export error'))
+    );
+
+    component.exportPdf();
+
+    expect(component.errorMessage()).toBe('Export error');
+    expect(component.isExportingPdf()).toBeFalsy();
   });
 });

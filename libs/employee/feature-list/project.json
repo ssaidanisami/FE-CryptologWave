@@ -36,7 +36,7 @@
         "cypressConfig": "libs/employee/feature-list/cypress.config.ts",
         "testingType": "component",
         "skipServe": true,
-        "devServerTarget": "FE-CryptologWave:build"
+        "devServerTarget": "employee-portal:build"
       }
     }
   }
